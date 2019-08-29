@@ -4,42 +4,39 @@ module God
 
   # The God::Server oversees the DRb server which dishes out info on this God daemon.
   class Socket
-    attr_reader :port
+    attr_reader :path
 
-    # The location of the socket for a given port
-    #   +port+ is the port number
+    # The location of the socket for a given path
     #
     # Returns String (file location)
-    def self.socket_file(port)
-      "/tmp/god.#{port}.sock"
+    def self.socket_file(path)
+      path || God::DRB_SOCKET_DEFAULT
     end
 
-    # The address of the socket for a given port
-    #   +port+ is the port number
+    # The address of the socket for a given path
     #
     # Returns String (drb address)
-    def self.socket(port)
-      "drbunix://#{self.socket_file(port)}"
+    def self.socket(path)
+      "drbunix://#{self.socket_file(path)}"
     end
 
     # The location of the socket for this Server
     #
     # Returns String (file location)
     def socket_file
-      self.class.socket_file(@port)
+      self.class.socket_file(@socket)
     end
 
     # The address of the socket for this Server
     #
     # Returns String (drb address)
     def socket
-      self.class.socket(@port)
+      self.class.socket(@socket)
     end
 
     # Create a new Server and star the DRb server
-    #   +port+ is the port on which to start the DRb service (default nil)
-    def initialize(port = nil, user = nil, group = nil, perm = nil)
-      @port  = port
+    def initialize(socket = nil, user = nil, group = nil, perm = nil)
+      @socket = socket
       @user  = user
       @group = group
       @perm  = perm

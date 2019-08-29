@@ -171,8 +171,8 @@ module God
   # permissions will be used.
   PID_FILE_DIRECTORY_DEFAULTS = ['/var/run/god', '~/.god/pids']
 
-  # The default Integer port number for the DRb communcations channel.
-  DRB_PORT_DEFAULT = 17165
+  # The default socket path for the DRb communcations channel.
+  DRB_SOCKET_DEFAULT = '/tmp/god.17165.sock'
 
   # The default Array of String IPs that will allow DRb communication access.
   DRB_ALLOW_DEFAULT = ['127.0.0.1']
@@ -194,7 +194,7 @@ module God
     # user configurable
     safe_attr_accessor :pid,
                        :host,
-                       :port,
+                       :socket,
                        :allow,
                        :log_buffer_size,
                        :pid_file_directory,
@@ -222,7 +222,7 @@ module God
   # Initialize class instance variables.
   self.pid = nil
   self.host = nil
-  self.port = nil
+  self.socket = nil
   self.allow = nil
   self.log_buffer_size = nil
   self.pid_file_directory = nil
@@ -249,7 +249,7 @@ module God
 
     # Set defaults.
     self.log_buffer_size ||= LOG_BUFFER_SIZE_DEFAULT
-    self.port ||= DRB_PORT_DEFAULT
+    self.socket ||= DRB_SOCKET_DEFAULT
     self.allow ||= DRB_ALLOW_DEFAULT
     self.log_level ||= LOG_LEVEL_DEFAULT
     self.terminate_timeout ||= TERMINATE_TIMEOUT_DEFAULT
@@ -700,7 +700,7 @@ module God
     self.internal_init
 
     # Instantiate server.
-    self.server = Socket.new(self.port, self.socket_user, self.socket_group, self.socket_perms)
+    self.server = Socket.new(self.socket, self.socket_user, self.socket_group, self.socket_perms)
 
     # Start monitoring any watches set to autostart.
     self.watches.values.each { |w| w.monitor if w.autostart? }

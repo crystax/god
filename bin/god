@@ -12,17 +12,17 @@ begin
   # Save ARGV in case someone wants to use it later
   ORIGINAL_ARGV = ARGV.dup
 
-  options = {:daemonize => true, :port => 17165, :syslog => true, :events => true}
+  options = {:daemonize => true, :syslog => true, :events => true}
 
   opts = OptionParser.new do |opts|
     opts.banner = <<-EOF
   Usage:
     Starting:
-      god [-c <config file>] [-p <port> | -b] [-P <file>] [-l <file>] [-D]
+      god [-c <config file>] [-s <path>] [-P <file>] [-l <file>] [-D]
 
     Querying:
-      god <command> <argument> [-p <port>]
-      god <command> [-p <port>]
+      god <command> <argument> [-s <path>]
+      god <command> [-s <path>]
       god -v
       god -V (must be run as root to be accurate on Linux)
 
@@ -48,12 +48,8 @@ begin
       options[:config] = x
     end
 
-    opts.on("-pPORT", "--port PORT", "Communications port (default 17165)") do |x|
-      options[:port] = x
-    end
-
-    opts.on("-b", "--auto-bind", "Auto-bind to an unused port number") do
-      options[:port] = "0"
+    opts.on("-sPATH", "--socket PATH", "Path to the DRb socket") do |x|
+      options[:socket] = File.expand_path(x)
     end
 
     opts.on("-PFILE", "--pid FILE", "Where to write the PID file") do |x|

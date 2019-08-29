@@ -46,8 +46,8 @@ module God
           self.attach
         end
 
-        if @options[:port]
-          God.port = @options[:port]
+        if @options[:socket]
+          God.socket = @options[:socket]
         end
 
         if @options[:events]
