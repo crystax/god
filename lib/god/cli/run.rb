@@ -38,6 +38,14 @@ module God
       end
 
       def default_run
+        # Stop all the processes and exit on SIGTERM
+        Signal.trap('TERM') do
+          Thread.start do
+            God.stop_all
+            God.terminate
+          end
+        end
+
         # make sure we have STDIN/STDOUT redirected immediately
         setup_logging
 
