@@ -33,7 +33,7 @@ module God
       end
 
       def test
-        if File.exists?(self.path)
+        if File.exist?(self.path)
           (Time.now - File.mtime(self.path)) <= self.interval
         else
           false
